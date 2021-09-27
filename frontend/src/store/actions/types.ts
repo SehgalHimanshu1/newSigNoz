@@ -2,6 +2,7 @@ import { updateTimeIntervalAction } from './global';
 import { serviceMapItemAction, servicesAction } from './serviceMap';
 import { updateTraceFiltersAction } from './traceFilters';
 import { FetchTraceItemAction,FetchTracesAction } from './traces';
+import { CodesCountListAction } from './stats';
 import { getUsageDataAction } from './usage';
 
 export enum ActionTypes {
@@ -12,6 +13,7 @@ export enum ActionTypes {
 	getUsageData = 'GET_USAGE_DATE',
 	fetchTraces = 'FETCH_TRACES',
 	fetchTraceItem = 'FETCH_TRACE_ITEM',
+	codesCountList = 'CODES_COUNT',
 }
 
 export type Action =
@@ -21,4 +23,5 @@ export type Action =
 	| getUsageDataAction
 	| updateTimeIntervalAction
 	| servicesAction
-	| serviceMapItemAction;
+	| serviceMapItemAction
+	| CodesCountListAction;

@@ -46,6 +46,11 @@ type ServiceItem struct {
 	FourXXRate   float32 `json:"fourXXRate" db:"fourXXRate"`
 }
 
+type CodesCountPerApplicationItem struct {
+	ServiceName  string  `json:"serviceName" db:"serviceName"`
+	Count        int     `json:"count" db:"count"`
+}
+
 type ServiceListErrorItem struct {
 	ServiceName string `json:"serviceName"`
 	NumErrors   int    `json:"numErrors"`

@@ -242,7 +242,29 @@ func (r *ClickHouseReader) GetServices(ctx context.Context, queryParams *model.G
 
 	return &serviceItems, nil
 }
+func (r *ClickHouseReader) GetCodesCountPerApplication(ctx context.Context, queryParams *model.GetCodesCountPerApplicationParams) (*[]model.CodesCountPerApplicationItem, error) {
 
+	if r.indexTable == "" {
+		return nil, ErrNoIndexTable
+	}
+
+	codesCountPerApplicationItems := []model.CodesCountPerApplicationItem{}
+
+	query := fmt.Sprintf("SELECT serviceName, count(*) as count FROM %s WHERE timestamp>='%s' AND timestamp<='%s' AND statusCode = %s GROUP BY serviceName", r.indexTable, strconv.FormatInt(queryParams.Start.UnixNano(), 10), strconv.FormatInt(queryParams.End.UnixNano(), 10), queryParams.EventType )
+	err := r.db.Select(&codesCountPerApplicationItems, query)
+	
+
+
+	zap.S().Info(query)
+
+	if err != nil {
+		zap.S().Debug("Error in processing sql query: ", err)
+		return nil, fmt.Errorf("Error in processing sql query")
+	}
+
+
+	return &codesCountPerApplicationItems, nil
+}
 func (r *ClickHouseReader) GetServiceOverview(ctx context.Context, queryParams *model.GetServiceOverviewParams) (*[]model.ServiceOverviewItem, error) {
 
 	serviceOverviewItems := []model.ServiceOverviewItem{}

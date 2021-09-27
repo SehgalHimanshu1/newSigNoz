@@ -60,6 +60,10 @@ func (druid *DruidReader) GetServices(ctx context.Context, query *model.GetServi
 	return druidQuery.GetServices(druid.SqlClient, query)
 }
 
+func (druid *DruidReader) GetCodesCountPerApplication(ctx context.Context, query *model.GetCodesCountPerApplicationParams) (*[]model.CodesCountPerApplicationItem , error) {
+	return druidQuery.GetCodesCountPerApplication(druid.SqlClient, query)
+}
+
 func (druid *DruidReader) SearchSpans(ctx context.Context, query *model.SpanSearchParams) (*[]model.SearchSpansResult, error) {
 	return druidQuery.SearchSpans(druid.Client, query)
 }

@@ -45,6 +45,15 @@ type GetServicesParams struct {
 	End       *time.Time
 }
 
+type GetCodesCountPerApplicationParams struct {
+	StartTime string
+	EndTime   string
+	EventType string
+	Period    int
+	Start     *time.Time
+	End       *time.Time
+}
+
 type GetServiceOverviewParams struct {
 	StartTime   string
 	EndTime     string

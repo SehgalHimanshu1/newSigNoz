@@ -7,6 +7,7 @@ import {
 	SettingsPage,
 	SignupPage,
 	TraceDetailPage,
+	StatsDetailPage,
 	TraceGraphPage,
 	UsageExplorerPage,
 } from 'pages';
@@ -57,6 +58,11 @@ const routes: AppRoutes[] = [
 		path: ROUTES.TRACES,
 		exact: true,
 		component: TraceDetailPage,
+	},
+	{
+		path: ROUTES.STATS,
+		exact: true,
+		component: StatsDetailPage,
 	},
 ];
 

@@ -21,6 +21,13 @@ export const TraceDetailPage = Loadable(
 		),
 );
 
+export const StatsDetailPage = Loadable(
+	() =>
+		import(
+			/* webpackChunkName: "ErrorListPage" */ 'modules/Stats/ServicesTableDef'
+		),
+)
+
 export const TraceGraphPage = Loadable(
 	() =>
 		import(

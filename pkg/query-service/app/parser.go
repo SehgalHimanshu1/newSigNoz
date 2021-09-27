@@ -272,6 +272,34 @@ func parseGetServicesRequest(r *http.Request) (*model.GetServicesParams, error) 
 
 }
 
+func parseGetCodesCountPerApplicationRequest(r *http.Request) (*model.GetCodesCountPerApplicationParams, error) {
+
+	startTime, err := parseTime("start", r)
+	if err != nil {
+		return nil, err
+	}
+	endTime, err := parseTime("end", r)
+	if err != nil {
+		return nil, err
+	}
+
+	eventType := r.URL.Query().Get("eventType")
+	if len(eventType) == 0 {
+		return nil, errors.New("eventType param missing in query")
+	}
+
+	getCodesCountPerApplicationParams := model.GetCodesCountPerApplicationParams{
+		Start:     startTime,
+		StartTime: startTime.Format(time.RFC3339Nano),
+		End:       endTime,
+		EndTime:   endTime.Format(time.RFC3339Nano),
+		EventType: eventType,
+		Period:    int(endTime.Unix() - startTime.Unix()),
+	}
+	return &getCodesCountPerApplicationParams, nil
+
+}
+
 func DoesExistInSlice(item string, list []string) bool {
 	for _, element := range list {
 		if item == element {

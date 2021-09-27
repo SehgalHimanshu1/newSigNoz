@@ -515,6 +515,33 @@ func GetServices(client *SqlClient, query *model.GetServicesParams) (*[]model.Se
 	return &servicesResponse, nil
 }
 
+func GetCodesCountPerApplication(client *SqlClient, query *model.GetCodesCountPerApplicationParams) (*[]model.CodesCountPerApplicationItem, error) {
+
+	sqlQuery := fmt.Sprintf(`SELECT "ServiceName" as "serviceName", count(*) as count FROM %s WHERE "__time" >= '%s' and "__time" <= '%s' and statusCode = %s GROUP BY "ServiceName"`, constants.DruidDatasource, query.StartTime, query.EndTime, query.EventType)
+
+	response, err := client.Query(sqlQuery, "object")
+
+	// zap.S().Debug(sqlQuery)
+
+	if err != nil {
+		zap.S().Error(query, err)
+		return nil, fmt.Errorf("Something went wrong in druid query")
+	}
+
+	// zap.S().Info(string(response))
+
+	res := new([]model.CodesCountPerApplicationItem)
+	err = json.Unmarshal(response, res)
+	if err != nil {
+		zap.S().Error(err)
+		return nil, fmt.Errorf("Error in unmarshalling response from druid")
+	}
+
+
+	codesCountResponse := (*res)[1:]
+	return &codesCountResponse, nil
+}
+
 func GetServiceMapDependencies(client *SqlClient, query *model.GetServicesParams) (*[]model.ServiceMapDependencyResponseItem, error) {
 
 	sqlQuery := fmt.Sprintf(`SELECT SpanId, ParentSpanId, ServiceName FROM %s WHERE "__time" >= '%s' AND "__time" <= '%s' ORDER BY __time DESC LIMIT 100000`, constants.DruidDatasource, query.StartTime, query.EndTime)

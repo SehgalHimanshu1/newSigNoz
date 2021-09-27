@@ -13,6 +13,7 @@ type Reader interface {
 	GetQueryRangeResult(ctx context.Context, query *model.QueryRangeParams) (*promql.Result, *stats.QueryStats, *model.ApiError)
 	GetServiceOverview(ctx context.Context, query *model.GetServiceOverviewParams) (*[]model.ServiceOverviewItem, error)
 	GetServices(ctx context.Context, query *model.GetServicesParams) (*[]model.ServiceItem, error)
+	GetCodesCountPerApplication(ctx context.Context, query *model.GetCodesCountPerApplicationParams) (*[]model.CodesCountPerApplicationItem, error)
 	// GetApplicationPercentiles(ctx context.Context, query *model.ApplicationPercentileParams) ([]godruid.Timeseries, error)
 	SearchSpans(ctx context.Context, query *model.SpanSearchParams) (*[]model.SearchSpansResult, error)
 	GetServiceDBOverview(ctx context.Context, query *model.GetServiceOverviewParams) (*[]model.ServiceDBOverviewItem, error)

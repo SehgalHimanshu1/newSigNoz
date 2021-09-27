@@ -1,3 +1,4 @@
+import { ConsoleSqlOutlined } from '@ant-design/icons';
 import { AutoComplete,Button, Form, Input, Select } from 'antd';
 import FormItem from 'antd/lib/form/FormItem';
 import { Store } from 'antd/lib/form/interface';
@@ -12,6 +13,8 @@ import {
 	GlobalTime,
 	TraceFilters,
 	updateTraceFilters,
+	traceResponseNew,
+	pushDStree
 } from 'store/actions';
 import { StoreState } from 'store/reducers';
 import styled from 'styled-components';
@@ -30,6 +33,7 @@ const InfoWrapper = styled.div`
 interface TraceFilterProps {
 	traceFilters: TraceFilters;
 	globalTime: GlobalTime;
+	traces: traceResponseNew;
 	updateTraceFilters: Function;
 	fetchTraces: Function;
 }
@@ -44,6 +48,10 @@ interface ISpanKind {
 	value: string;
 }
 
+interface tempi {
+	value: string;
+}
+
 const _TraceFilter = (props: TraceFilterProps) => {
 	const [serviceList, setServiceList] = useState<string[]>([]);
 	const [operationList, setOperationsList] = useState<string[]>([]);
@@ -51,7 +59,7 @@ const _TraceFilter = (props: TraceFilterProps) => {
 	const location = useLocation();
 	const urlParams = new URLSearchParams(location.search.split('?')[1]);
 	const { state } = useRoute();
-
+	const [tagsValue, setTagsValue] = useState<any>([]);
 	const spanKindList: ISpanKind[] = [
 		{
 			label: 'SERVER',
@@ -61,7 +69,7 @@ const _TraceFilter = (props: TraceFilterProps) => {
 			label: 'CLIENT',
 			value: '3',
 		},
-	];
+	];	
 
 	useEffect(() => {
 		handleApplyFilterForm({
@@ -72,7 +80,6 @@ const _TraceFilter = (props: TraceFilterProps) => {
 			kind: '',
 		});
 	}, []);
-
 	useEffect(() => {
 		api
 			.get<string[]>(`${apiV1}/services/list`)
@@ -305,9 +312,30 @@ const _TraceFilter = (props: TraceFilterProps) => {
 	// For autocomplete
 	//Setting value when autocomplete field is changed
 	const onChangeTagKey = (data: string) => {
+		let options: any  = [];
+		props.traces[0].events.map((item: any, index) => {
+			let tags = item[7];
+			for(let x = 0; x < tags.length ; x++){
+				if(tags[x] === data){
+					if(options.includes(item[8][x])){
+						// do nothing
+					}
+					else{
+						options.push(item[8][x]);
+					}
+				}
+			}
+		})
+		setTagsValue(options);
 		form.setFieldsValue({ tag_key: data });
 	};
 
+	const onChangeTagValue = (data: string) => {
+		form.setFieldsValue({ tag_value: data }); 
+	};
+	const onChangeTempValue = (data: string) => {
+		form.setFieldsValue({ temp: data }); 
+	};
 	const dataSource = ['status:200'];
 	const children = [];
 	for (let i = 0; i < dataSource.length; i++) {
@@ -379,7 +407,6 @@ const _TraceFilter = (props: TraceFilterProps) => {
 	const handleChangeSpanKind = (value = '') => {
 		props.updateTraceFilters({ ...props.traceFilters, kind: value });
 	};
-
 	return (
 		<div>
 			<div>Filter Traces</div>
@@ -487,8 +514,18 @@ const _TraceFilter = (props: TraceFilterProps) => {
 				</FormItem>
 
 				<FormItem rules={[{ required: true }]} name="tag_value">
-					<Input
+					<AutoComplete
+						options={tagsValue.map((s: any) => {
+							return { value: s };
+						})}
+						// options={tempOptions.map((option: any) =>option)}
 						style={{ width: 160, textAlign: 'center' }}
+						// onSelect={onSelect}
+						// onSearch={onSearch}
+						onChange={onChangeTagValue}
+						filterOption={(inputValue, option) =>
+							option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+						}
 						placeholder="Tag Value"
 					/>
 				</FormItem>
@@ -516,8 +553,8 @@ const _TraceFilter = (props: TraceFilterProps) => {
 
 const mapStateToProps = (
 	state: StoreState,
-): { traceFilters: TraceFilters; globalTime: GlobalTime } => {
-	return { traceFilters: state.traceFilters, globalTime: state.globalTime };
+): { traceFilters: TraceFilters; globalTime: GlobalTime; traces: traceResponseNew } => {
+	return { traceFilters: state.traceFilters, globalTime: state.globalTime, traces: state.traces  };
 };
 
 export const TraceFilter = connect(mapStateToProps, {

@@ -405,7 +405,7 @@ start_docker
 echo ""
 echo -e "\n🟡 Pulling the latest container images for SigNoz. To run as sudo it may ask for system password\n"
 if [ $setup_type == 'clickhouse' ]; then
-    sudo docker-compose -f ./docker/clickhouse-setup/docker-compose.yaml pull
+    sudo docker-compose -f ./docker/clickhouse-setup/docker-compose.yaml up
 else
     sudo docker-compose -f ./docker/druid-kafka-setup/docker-compose-tiny.yaml pull
 fi

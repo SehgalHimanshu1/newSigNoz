@@ -20,6 +20,11 @@ const menus: SidebarMenu[] = [
 		name: "Traces",
 	},
 	{
+		Icon: BarChartOutlined,
+		to: ROUTES.STATS,
+		name: "Stats",
+	},
+	{
 		to: ROUTES.SERVICE_MAP,
 		name: "Service Map",
 		Icon: DeploymentUnitOutlined,

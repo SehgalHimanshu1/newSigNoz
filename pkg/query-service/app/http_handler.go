@@ -182,6 +182,7 @@ func (aH *APIHandler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/api/v1/user", aH.user).Methods(http.MethodPost)
 	// router.HandleFunc("/api/v1/get_percentiles", aH.getApplicationPercentiles).Methods(http.MethodGet)
 	router.HandleFunc("/api/v1/services", aH.getServices).Methods(http.MethodGet)
+	router.HandleFunc("/api/v1/codesCountPerApplication", aH.getCodesCountPerApplication).Methods(http.MethodGet)
 	router.HandleFunc("/api/v1/services/list", aH.getServicesList).Methods(http.MethodGet)
 	router.HandleFunc("/api/v1/service/overview", aH.getServiceOverview).Methods(http.MethodGet)
 	router.HandleFunc("/api/v1/service/dbOverview", aH.getServiceDBOverview).Methods(http.MethodGet)
@@ -653,6 +654,21 @@ func (aH *APIHandler) getServices(w http.ResponseWriter, r *http.Request) {
 			Event:      "Different Number of Services",
 			Properties: posthog.NewProperties().Set("number", len(*result)),
 		})
+	}
+
+	aH.writeJSON(w, r, result)
+}
+
+func (aH *APIHandler) getCodesCountPerApplication(w http.ResponseWriter, r *http.Request) {
+
+	query, err := parseGetCodesCountPerApplicationRequest(r)
+	if aH.handleError(w, err, http.StatusBadRequest) {
+		return
+	}
+
+	result, err := (*aH.reader).GetCodesCountPerApplication(context.Background(), query)
+	if aH.handleError(w, err, http.StatusBadRequest) {
+		return
 	}
 
 	aH.writeJSON(w, r, result)

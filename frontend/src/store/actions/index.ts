@@ -5,3 +5,4 @@ export * from './traceFilters';
 export * from './traces';
 export * from './types';
 export * from './usage';
+export * from './stats';
